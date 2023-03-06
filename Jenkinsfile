@@ -1,28 +1,34 @@
 pipeline {
-    agent any
- 
-   tools
-    {
-       maven "Maven"
+    
+	agent any
+	
+	tools {
+         maven 'maven' 
     }
- stages {
-      stage('checkout') {
-           steps {
-             
-                git branch: 'master', url: 'https://github.com/palakbhawsar98/JavaWebApp'
-             
-          }
+		
+	
+   stages{
+        
+        stage('BUILD'){
+            steps {
+                sh 'mvn clean install -DskipTests'
+		archiveArtifacts artifacts: '**/target/*.jar'    
+            }
+          
         }
-  stage('Maven Build') {
-           steps {
-             
-                sh 'mvn clean install'             
-          }
+
+	stage('UNIT TEST'){
+            steps {
+                sh 'mvn test'
+            }
         }
-  stage('Maven Test') {
-           steps {
-             
-                sh 'mvn test'             
-          }
-        }		
- }
+
+	stage('INTEGRATION TEST'){
+            steps {
+                sh 'mvn verify -DskipUnitTests'
+            }
+        }
+		
+    }
+
+}
