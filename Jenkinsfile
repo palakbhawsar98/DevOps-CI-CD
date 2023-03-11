@@ -26,7 +26,10 @@ pipeline {
              
                 sh 'mvn test'             
           }
-        }	
+        }
+
+  stage('Code Analysis') {
+  
    steps {
             withSonarQubeEnv('Sonar') {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
@@ -39,6 +42,7 @@ pipeline {
 
   
           }
+	}
          
     }
  }
