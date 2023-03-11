@@ -26,6 +26,19 @@ pipeline {
              
                 sh 'mvn test'             
           }
-        }		
+        }	
+   steps {
+            withSonarQubeEnv('Sonar') {
+               sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
+                   -Dsonar.projectName=web-services \
+                   -Dsonar.projectVersion=1.0 \
+                   -Dsonar.sources=src/ \
+                   -Dsonar.java.binaries=target/ \
+                 '''
+            }
+
+  
+          }
+         
     }
  }
