@@ -28,8 +28,12 @@ pipeline {
           }
         }
 
-  stage('Code Analysis') {
-  
+   stage('CODE ANALYSIS with SONARQUBE') {
+          
+		  environment {
+             scannerHome = tool 'sonarscanner4'
+          }
+
    steps {
             withSonarQubeEnv('Sonar') {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
