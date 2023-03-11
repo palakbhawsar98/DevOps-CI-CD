@@ -40,6 +40,7 @@ pipeline {
                    -Dsonar.projectName=web-services \
                    -Dsonar.projectVersion=1.0 \
                    -Dsonar.sources=src/ \
+		   -Dsonar.java.binaries=target/ \
                    -Dsonar.java.binaries=target/ \
                  '''
             }
