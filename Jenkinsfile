@@ -31,11 +31,11 @@ pipeline {
    stage('Code Analysis') {
           
 		  environment {
-             scannerHome = tool 'Sonar'
+             scannerHome = tool 'sonar'
           }
 
    steps {
-            withSonarQubeEnv('Sonar') {
+            withSonarQubeEnv('sonar') {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
                    -Dsonar.projectName=web-services \
                    -Dsonar.projectVersion=1.0 \
