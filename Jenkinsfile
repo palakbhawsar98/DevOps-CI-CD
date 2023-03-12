@@ -40,8 +40,7 @@ pipeline {
                    -Dsonar.projectName=web-services-repo \
                    -Dsonar.projectVersion=1.0 \
                    -Dsonar.sources=src/ \
-                   -Dsonar.java.binaries=target/test-classes/ \
-                   -Dsonar.junit.reportsPath=target/surefire-reports'''
+                   -Dsonar.java.binaries=target/'''
             }
           }
         }
