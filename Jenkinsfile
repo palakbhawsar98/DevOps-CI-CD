@@ -32,6 +32,22 @@ pipeline {
           }
         }
   
+     stage('Code Analysis') {
+          
+		  environment {
+             scannerHome = tool 'sonar4.8'
+          }
+
+          steps {
+            withSonarQubeEnv('sonar') {
+               sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
+                   -Dsonar.projectName=web-services-repo \
+                   -Dsonar.projectVersion=1.0 \
+                   -Dsonar.sources=src/ \
+                   -Dsonar.java.binaries=target/'''
+            }
+          }
+        }	 
      stage('Build Docker Image') {
          
            steps {
