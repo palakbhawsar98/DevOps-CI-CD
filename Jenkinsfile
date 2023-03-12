@@ -28,15 +28,28 @@ pipeline {
           }
         }
   
-     stage('Build image') {
-       dockerImage = docker.build("palakbhawsar/javawebapp:latest")
-    }
-    
- stage('Push image') {
-        withDockerRegistry([ credentialsId: "docker-hub-cred", url: "" ]) {
-        dockerImage.push()
+     stage('Build Docker Image') {
+         
+          environment {
+             dockerHome = tool 'docker'
+          }
+           steps {
+              
+                sh 'docker build -t javawebapp:latest .' 
+                sh 'docker tag javawebapp palakbhawsar/javawebapp:latest'     
+          }
         }
-    }   
+     
+  stage('Push image to DockerHub') {
+          
+            steps {
+        withDockerRegistry([ credentialsId: "docker-hub-cred", url: "" ]) {
+          sh  'docker push palakbhawsar/javawebapp:latest'
+        }
+                  
+          }
+        }
+      
       
     }
  }
