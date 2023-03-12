@@ -27,7 +27,12 @@ pipeline {
                 sh 'mvn test'             
           }
         }
+  
      stage('Build Docker Image') {
+         
+          environment {
+             dockerHome = tool 'docker'
+          }
            steps {
               
                 sh 'docker build -t javawebapp:latest .' 
