@@ -27,23 +27,5 @@ pipeline {
                 sh 'mvn test'             
           }
         }
-
-  stage('CODE ANALYSIS with SONARQUBE') {
-          
-		  environment {
-             scannerHome = tool 'sonar4.8'
-          }
-
-          steps {
-            withSonarQubeEnv('sonar') {
-               sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
-                   -Dsonar.projectName=web-services-repo \
-                   -Dsonar.projectVersion=1.0 \
-                   -Dsonar.sources=src/ \
-                   -Dsonar.java.binaries=target/'''
-            }
-          }
-        }
-         
     }
  }
