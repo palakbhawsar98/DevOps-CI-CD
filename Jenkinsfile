@@ -27,20 +27,21 @@ pipeline {
                 sh 'mvn test'             
           }
         }
-     stage('Code Analysis') {
-          
-		  environment {
-             scannerHome = tool 'sonar4.8'
+     stage('Build Docker Image') {
+           steps {
+              
+                sh 'docker build -t javawebapp:latest .' 
+                sh 'docker tag javawebapp palakbhawsar/Javawebapp:latest'     
           }
-
-          steps {
-            withSonarQubeEnv('sonar') {
-               sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
-                   -Dsonar.projectName=web-services-repo \
-                   -Dsonar.projectVersion=1.0 \
-                   -Dsonar.sources=src/ \
-                   -Dsonar.java.binaries=target/'''
-            }
+        }
+     
+  stage('Push image to DockerHub') {
+          
+            steps {
+        withDockerRegistry([ credentialsId: "docker-hub-cred", url: "" ]) {
+          sh  'docker push palakbhawsar/javawebapp:latest'
+        }
+                  
           }
         }
       
