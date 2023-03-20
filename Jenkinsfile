@@ -2,6 +2,7 @@ pipeline {
   agent any
   environment {
     DOCKERHUB_CREDENTIALS = credentials('docker-hub-cred')
+	  
   }
 	
   // Fetch code from GitHub
@@ -56,7 +57,7 @@ pipeline {
       }
     }
 	  
-   // Push image to DockerHUb registry
+   // Push image to DockerHub registry
 	  
     stage('Push Image to dockerHUb') {
       steps {
