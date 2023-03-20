@@ -70,14 +70,14 @@ pipeline {
 
     }
 	  
-   // Pull docker image from DockerHub and run in EC2 instance
+   // Pull docker image from DockerHub and run in EC2 instance 
 	  
     stage('Deploy Docker image to AWS instance') {
       steps {
         script {
           sshagent(credentials: ['awscred']) {
-            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.146.90.124 'docker pull palakbhawsar/javawebapp'"
-            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.146.90.124 'docker run -d -p 8081:8081 palakbhawsar/javawebapp'"
+		  sh "ssh -o StrictHostKeyChecking=no ec2-user@3.86.7.18 'docker pull palakbhawsar/javawebapp'"
+                  sh "ssh -o StrictHostKeyChecking=no ec2-user@3.86.7.18 'docker run -d -p 8081:8081 palakbhawsar/javawebapp'"
           }
         }
       }
