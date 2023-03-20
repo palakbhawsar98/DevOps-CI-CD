@@ -4,7 +4,7 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('docker-hub-cred')
   }
 	
-  # Fetch code from GitHub
+  // Fetch code from GitHub
 	
   stages {
     stage('checkout') {
@@ -14,14 +14,14 @@ pipeline {
       }
     }
 	  
-    # Build Java application
+   // Build Java application
 	  
     stage('Maven Build') {
       steps {
         sh 'mvn clean install'
       }
 	    
-      # Post building archive Java application
+     // Post building archive Java application
 	    
       post {
         success {
@@ -30,7 +30,7 @@ pipeline {
       }
     }
 	  
-    # Test Java application
+  // Test Java application
 	  
     stage('Maven Test') {
       steps {
@@ -38,7 +38,7 @@ pipeline {
       }
     }
 	  
-    # Build docker image in Jenkins
+   // Build docker image in Jenkins
 	  
     stage('Build Docker Image') {
 
@@ -48,7 +48,7 @@ pipeline {
       }
     }
 	  
-    # Login to DockerHub before pushing docker Image
+   // Login to DockerHub before pushing docker Image
 	  
     stage('Login to DockerHub') {
       steps {
@@ -56,7 +56,7 @@ pipeline {
       }
     }
 	  
-    # Push image to DockerHUb registry
+   // Push image to DockerHUb registry
 	  
     stage('Push Image to dockerHUb') {
       steps {
@@ -70,7 +70,7 @@ pipeline {
 
     }
 	  
-    # Pull docker image from DockerHub and run in EC2 instance
+   // Pull docker image from DockerHub and run in EC2 instance
 	  
     stage('Deploy Docker image to AWS instance') {
       steps {
