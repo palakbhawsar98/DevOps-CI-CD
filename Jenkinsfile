@@ -1,85 +1,86 @@
 pipeline {
-    agent any
-    
-    environment {
-		DOCKERHUB_CREDENTIALS=credentials('docker-hub-cred')
-	}
- 
- stages {
-      stage('checkout') {
-           steps {
-             
-                git branch: 'main', url: 'https://github.com/palakbhawsar98/JavaWebApp'
-             
-          }
-        }
-  stage('Maven Build') {
-           steps {
-             
-                sh 'mvn clean install'             
-          }
-      
-         post {
-                success {
-                    archiveArtifacts artifacts: '**/target/*.jar'
-                }
-            }
-        }
-  stage('Maven Test') {
-           steps {
-             
-                sh 'mvn test'             
-          }
-        }
-  
-     stage('Code Analysis') {
-          
-		  environment {
-             scannerHome = tool 'sonar4.8'
-          }
-
-          steps {
-            withSonarQubeEnv('sonar') {
-               sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web-services \
-                   -Dsonar.projectName=web-services-repo \
-                   -Dsonar.projectVersion=1.0 \
-                   -Dsonar.sources=src/ \
-                   -Dsonar.java.binaries=target/'''
-            }
-          }
-        }	 
-     stage('Build Docker Image') {
-         
-           steps {
-              
-                sh 'docker build -t javawebapp:latest .' 
-                sh 'docker tag javawebapp palakbhawsar/javawebapp:latest'     
-          }
-        }
-     
-   stage('Login to DockerHub') {
+  agent any
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('docker-hub-cred')
+  }
+	
+  # Fetch code from GitHub
+	
+  stages {
+    stage('checkout') {
       steps {
-        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        git branch: 'main', url: 'https://github.com/palakbhawsar98/JavaWebApp'
+
       }
     }
-	
+	  
+    # Build Java application
+	  
+    stage('Maven Build') {
+      steps {
+        sh 'mvn clean install'
+      }
+	    
+      # Post building archive Java application
+	    
+      post {
+        success {
+          archiveArtifacts artifacts: '**/target/*.jar'
+        }
+      }
+    }
+	  
+    # Test Java application
+	  
+    stage('Maven Test') {
+      steps {
+        sh 'mvn test'
+      }
+    }
+	  
+    # Build docker image in Jenkins
+	  
+    stage('Build Docker Image') {
+
+      steps {
+        sh 'docker build -t javawebapp:latest .'
+        sh 'docker tag javawebapp palakbhawsar/javawebapp:latest'
+      }
+    }
+	  
+    # Login to DockerHub before pushing docker Image
+	  
+    stage('Login to DockerHub') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u    $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+      }
+    }
+	  
+    # Push image to DockerHUb registry
+	  
     stage('Push Image to dockerHUb') {
       steps {
         sh 'docker push palakbhawsar/javawebapp:latest'
       }
-	  post {
-    always {
-      sh 'docker logout'
+      post {
+        always {
+          sh 'docker logout'
+        }
+      }
+
+    }
+	  
+    # Pull docker image from DockerHub and run in EC2 instance
+	  
+    stage('Deploy Docker image to AWS instance') {
+      steps {
+        script {
+          sshagent(credentials: ['awscred']) {
+            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.146.90.124 'docker pull palakbhawsar/javawebapp'"
+            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.146.90.124 'docker run -d -p 8081:8081 palakbhawsar/javawebapp'"
+          }
+        }
+      }
     }
   }
-    
-	}
-	
-	
-  }
-  
-       
-   
-      
- }
- 
+}
