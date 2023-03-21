@@ -1,8 +1,10 @@
 pipeline {
   agent any
+	
   environment {
     DOCKERHUB_CREDENTIALS = credentials('docker-hub-cred')
-	  
+    REMOTE_SERVER = '34.229.255.32'
+    REMOTE_USER = 'ec2-user'	  	  
   }
 	
   // Fetch code from GitHub
@@ -77,8 +79,9 @@ pipeline {
       steps {
         script {
           sshagent(credentials: ['awscred']) {
-		  sh "ssh -o StrictHostKeyChecking=no ec2-user@3.86.7.18 'docker pull palakbhawsar/javawebapp'"
-                  sh "ssh -o StrictHostKeyChecking=no ec2-user@3.86.7.18 'docker run -d -p 8081:8081 palakbhawsar/javawebapp'"
+          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker stop javaApp || true && docker rm javaApp || true'"
+	  sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker pull palakbhawsar/javawebapp'"
+          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker run --name javaApp -d -p 8081:8081 palakbhawsar/javawebapp'"
           }
         }
       }
