@@ -1,6 +1,6 @@
 #Define your base image 
 FROM eclipse-temurin:17-jdk-focal 
-
+Run apt update
 #Maintainer of this image
 LABEL maintainer="Palak Bhawsar" 
                                                                                                                             
